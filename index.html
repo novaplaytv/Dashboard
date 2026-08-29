@@ -72,7 +72,7 @@
 
         /* Info Rows */
         .info-container { width: 100%; margin-bottom: 30px; }
-        .version-row { display: flex; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 14px; width: 100%; align-items: center; }
+        .version-row { display: flex; justify-content: center; gap: 15px; padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 14px; width: 100%; align-items: center; }
         .version-row span:first-child { color: var(--text-muted); font-weight: 600; }
         .version-row .tag { font-weight: 900; color: var(--warning); background: rgba(255,187,0,0.1); padding: 4px 10px; border-radius: 8px; font-size: 12px; }
         .version-row .val { font-weight: 700; color: #fff; }
@@ -92,6 +92,19 @@
         .form-group label { display: block; margin-bottom: 8px; font-size: 11px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; }
 
         .btn-primary { background: var(--primary); color: #fff; border: none; cursor: pointer; transition: 0.2s; }
+
+        /* NovaModal Premium */
+        .nova-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); z-index: 20000; display: none; align-items: center; justify-content: center; padding: 20px; }
+        .nova-modal { background: var(--card-bg); border: 1px solid var(--border); border-radius: 30px; width: 100%; max-width: 450px; padding: 40px; box-shadow: 0 25px 60px rgba(0,0,0,0.6); text-align: center; animation: modal-in 0.3s ease-out; }
+        @keyframes modal-in { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .nova-modal h3 { font-size: 22px; font-weight: 900; margin-bottom: 15px; text-transform: uppercase; }
+        .nova-modal p { color: var(--text-muted); font-size: 15px; margin-bottom: 25px; line-height: 1.5; }
+        .nova-modal input { width: 100%; padding: 15px; background: var(--bg); border: 1px solid var(--border); border-radius: 14px; color: #fff; margin-bottom: 20px; font-size: 15px; }
+        .nova-modal-btns { display: flex; gap: 12px; }
+        .nova-modal-btn { flex: 1; padding: 15px; border-radius: 14px; border: 0; font-weight: 800; cursor: pointer; transition: 0.2s; }
+        .btn-confirm { background: var(--primary); color: #fff; }
+        .btn-cancel { background: #222; color: #fff; }
+        .nova-modal-btn:hover { transform: scale(1.03); }
 
         .hidden { display: none !important; }
         ::-webkit-scrollbar { width: 8px; }
@@ -195,6 +208,20 @@
     </div>
 </main>
 
+<div class="nova-modal-overlay" id="novaModal">
+    <div class="nova-modal">
+        <h3 id="modalTitle">Confirmar</h3>
+        <p id="modalMessage">¿Deseas realizar esta acción?</p>
+        <div id="modalInputContainer" class="hidden">
+            <input type="text" id="modalInput" placeholder="...">
+        </div>
+        <div class="nova-modal-btns">
+            <button class="nova-modal-btn btn-cancel" id="modalCancel">CANCELAR</button>
+            <button class="nova-modal-btn btn-confirm" id="modalConfirm">ACEPTAR</button>
+        </div>
+    </div>
+</div>
+
 <footer>
     <div class="footer-text">
         © 2026 NOVAPLAY TV<br>
@@ -253,7 +280,25 @@
         }
     }
 
-    function cerrarSesion() { localStorage.removeItem("novaplay_session_token"); location.reload(); }
+    function openModal(title, msg, onConfirm, isPrompt = false, defaultValue = "") {
+        const m = document.getElementById("novaModal");
+        document.getElementById("modalTitle").innerText = title;
+        document.getElementById("modalMessage").innerText = msg;
+        const inputContainer = document.getElementById("modalInputContainer");
+        const input = document.getElementById("modalInput");
+        if (isPrompt) { inputContainer.classList.remove("hidden"); input.value = defaultValue; }
+        else { inputContainer.classList.add("hidden"); }
+        m.style.display = "flex";
+        document.getElementById("modalCancel").onclick = () => m.style.display = "none";
+        document.getElementById("modalConfirm").onclick = () => { if (isPrompt) onConfirm(input.value); else onConfirm(); m.style.display = "none"; };
+    }
+
+    function cerrarSesion() {
+        openModal("Cerrar Sesión", "¿Estás seguro que deseas salir del Dashboard?", () => {
+            localStorage.removeItem("novaplay_session_token");
+            location.reload();
+        });
+    }
 
     async function loadSummary() {
         if (!sessionToken) return;
