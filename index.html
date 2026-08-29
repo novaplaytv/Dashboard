@@ -18,6 +18,7 @@
             --text-muted: #9aa3b2;
             --border: rgba(255,255,255,0.05);
             --success: #10b981;
+            --error: #ef4444;
             --warning: #ffbb00;
             --nav-height: 70px;
         }
@@ -49,11 +50,13 @@
             display: none;
             transition: 0.2s;
         }
-        .btn-login-nav:hover, .btn-logout:hover { transform: scale(1.05); background: var(--primary-hover); }
-        .btn-logout { background: var(--error); box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3); }
+        .btn-login-nav:hover { transform: scale(1.05); background: var(--primary-hover); }
+        .btn-logout { display: none; background: var(--error); box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3); }
+        .btn-logout:hover { transform: scale(1.05); filter: brightness(1.2); }
 
         /* Contenedor Principal */
-        .app-container { max-width: 1300px; margin: 40px auto; padding: 0 25px; display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 25px; align-items: start; }
+        main { height: calc(100% - var(--nav-height)); margin-top: var(--nav-height); overflow-y: auto; display: flex; flex-direction: column; align-items: center; }
+        .app-container { width: 100%; max-width: 1300px; padding: 40px 25px; display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 25px; align-items: start; }
 
         /* Cards */
         .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 28px; padding: 35px; box-shadow: 0 15px 40px rgba(0,0,0,0.4); display: flex; flex-direction: column; transition: 0.3s; position: relative; overflow: hidden; }
@@ -73,10 +76,15 @@
 
         /* Login */
         #auth-view { position: fixed; inset: 0; background: var(--bg); z-index: 10001; display: flex; justify-content: center; align-items: center; }
-        .auth-card { width: 400px; padding: 50px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 35px; box-shadow: 0 30px 80px rgba(0,0,0,0.6); text-align: center; }
+        .auth-card { width: 400px; padding: 50px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 35px; text-align: center; box-shadow: 0 30px 80px rgba(0,0,0,0.6); }
         .auth-card input { width: 100%; padding: 16px; background: var(--bg); border: 1px solid var(--border); border-radius: 14px; color: #fff; margin-bottom: 15px; font-size: 15px; }
         .status { margin-top: 15px; padding: 14px; border-radius: 12px; font-size: 13px; font-weight: 800; display: none; text-align: center; }
         .status.error { background: rgba(239,68,68,0.1); color: var(--error); border: 1px solid var(--error); }
+
+        .form-group { text-align: left; margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-size: 11px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; }
+
+        .btn-primary { background: var(--primary); color: #fff; border: none; cursor: pointer; transition: 0.2s; }
 
         /* Versiones */
         .version-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 14px; }
@@ -87,7 +95,7 @@
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
 
-        footer { padding: 60px 20px; background: #000; border-top: 1px solid rgba(255,255,255,0.05); text-align: center; }
+        footer { width: 100%; padding: 60px 20px; background: #000; border-top: 1px solid rgba(255,255,255,0.05); text-align: center; margin-top: auto; }
         .footer-text { font-size: 13px; color: #444; line-height: 1.8; font-weight: 600; }
     </style>
 </head>
@@ -108,80 +116,78 @@
     </div>
 </nav>
 
-<main style="margin-top: var(--nav-height); min-height: calc(100vh - var(--nav-height) - 140px); display: flex; align-items: center; justify-content: center;">
-
-<div id="auth-view" class="hidden">
-    <div class="auth-card">
-        <h2 style="margin-bottom:30px; font-weight:900; font-size: 28px;">Acceso al Panel</h2>
-        <div class="form-group" style="text-align: left; margin-bottom: 20px;">
-            <label style="display: block; margin-bottom: 8px; font-size: 11px; font-weight: 900; color: var(--text-muted); text-transform: uppercase;">Usuario</label>
-            <input type="text" id="username" placeholder="Usuario">
-        </div>
-        <div class="form-group" style="text-align: left; margin-bottom: 20px;">
-            <label style="display: block; margin-bottom: 8px; font-size: 11px; font-weight: 900; color: var(--text-muted); text-transform: uppercase;">Contraseña</label>
-            <input type="password" id="password" placeholder="••••••••">
-        </div>
-        <button class="btn btn-primary" id="loginButton" style="width:100%; justify-content:center; padding: 18px;" onclick="iniciarSesion()">ENTRAR AL PANEL</button>
-        <div id="loginStatus" class="status"></div>
-    </div>
-</div>
-
-<div class="app-container hidden" id="main-panel">
-
-    <!-- Seguridad Widget -->
-    <div class="card">
-        <h2><i class="fas fa-shield-alt"></i> Seguridad & Accesos</h2>
-        <div class="stats-grid">
-            <div class="stat-box">
-                <span class="value" id="count-users">0</span>
-                <span class="label">Activos</span>
+<main>
+    <div id="auth-view" class="hidden">
+        <div class="auth-card">
+            <h2 style="margin-bottom:30px; font-weight:900; font-size: 28px;">Acceso al Panel</h2>
+            <div class="form-group">
+                <label>Usuario</label>
+                <input type="text" id="username" placeholder="Usuario">
             </div>
-            <div class="stat-box">
-                <span class="value" id="count-blocked" style="color:var(--primary)">0</span>
-                <span class="label">Bloqueados</span>
+            <div class="form-group">
+                <label>Contraseña</label>
+                <input type="password" id="password" placeholder="••••••••">
             </div>
+            <button class="btn-primary" id="loginButton" style="width:100%; justify-content:center; padding: 18px; border-radius: 14px; font-weight: 900;" onclick="iniciarSesion()">ENTRAR AL PANEL</button>
+            <div id="loginStatus" class="status"></div>
         </div>
-        <div class="version-row"><span>Estado del Búnker</span> <span class="tag" style="color:var(--success)">PROTEGIDO</span></div>
-        <div class="version-row"><span>Alertas Recientes</span> <span id="count-logs">0</span></div>
-        <a href="https://novaplaytv.github.io/NovaSecurity/" class="btn-launch">
-            <i class="fas fa-external-link-alt"></i> ABRIR SEGURIDAD
-        </a>
     </div>
 
-    <!-- Canales Widget -->
-    <div class="card">
-        <h2><i class="fas fa-tv"></i> Gestión de Contenidos</h2>
-        <div class="stats-grid">
-            <div class="stat-box">
-                <span class="value" id="count-total-ch">0</span>
-                <span class="label">Canales</span>
+    <div class="app-container hidden" id="main-panel">
+        <!-- Seguridad Widget -->
+        <div class="card">
+            <h2><i class="fas fa-shield-alt"></i> Seguridad & Accesos</h2>
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <span class="value" id="count-users">0</span>
+                    <span class="label">Activos</span>
+                </div>
+                <div class="stat-box">
+                    <span class="value" id="count-blocked" style="color:var(--primary)">0</span>
+                    <span class="label">Bloqueados</span>
+                </div>
             </div>
-            <div class="stat-box">
-                <span class="value" id="count-inactive-ch" style="color:var(--warning)">0</span>
-                <span class="label">En Mant.</span>
-            </div>
+            <div class="version-row"><span>Estado del Búnker</span> <span class="tag" style="color:var(--success)">PROTEGIDO</span></div>
+            <div class="version-row"><span>Alertas Recientes</span> <span id="count-logs">0</span></div>
+            <a href="https://novaplaytv.github.io/NovaSecurity/" class="btn-launch">
+                <i class="fas fa-external-link-alt"></i> ABRIR SEGURIDAD
+            </a>
         </div>
-        <div class="version-row"><span>Fuente Principal</span> <span class="val">novaplay.json</span></div>
-        <div class="version-row"><span>Categorías</span> <span id="count-cats">0</span></div>
-        <a href="https://novaplaytv.github.io/panel-canales/" class="btn-launch">
-            <i class="fas fa-list"></i> GESTIONAR CANALES
-        </a>
-    </div>
 
-    <!-- Aplicaciones Widget -->
-    <div class="card">
-        <h2><i class="fas fa-download"></i> Actualizaciones & APKs</h2>
-        <div id="apps-container">
-            <div class="version-row"><span>NovaPlay Estable</span> <span class="tag" id="v-stable">...</span></div>
-            <div class="version-row"><span>NovaPlay Beta</span> <span class="tag" id="v-beta">...</span></div>
-            <div class="version-row"><span>KillerTV</span> <span class="tag" id="v-killer">...</span></div>
+        <!-- Canales Widget -->
+        <div class="card">
+            <h2><i class="fas fa-tv"></i> Gestión de Contenidos</h2>
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <span class="value" id="count-total-ch">0</span>
+                    <span class="label">Canales</span>
+                </div>
+                <div class="stat-box">
+                    <span class="value" id="count-inactive-ch" style="color:var(--warning)">0</span>
+                    <span class="label">En Mant.</span>
+                </div>
+            </div>
+            <div class="version-row"><span>Fuente Principal</span> <span class="val">novaplay.json</span></div>
+            <div class="version-row"><span>Categorías</span> <span id="count-cats">0</span></div>
+            <a href="https://novaplaytv.github.io/panel-canales/" class="btn-launch">
+                <i class="fas fa-list"></i> GESTIONAR CANALES
+            </a>
         </div>
-        <p style="font-size: 11px; color:var(--text-muted); margin-top: 15px; margin-bottom: 20px;">* Los datos se sincronizan automáticamente cada hora.</p>
-        <a href="https://novaplaytv.github.io/NovaApps/" class="btn-launch">
-            <i class="fas fa-store"></i> IR A DESCARGAS
-        </a>
+
+        <!-- Aplicaciones Widget -->
+        <div class="card">
+            <h2><i class="fas fa-download"></i> Actualizaciones & APKs</h2>
+            <div id="apps-container">
+                <div class="version-row"><span>NovaPlay Estable</span> <span class="tag" id="v-stable">...</span></div>
+                <div class="version-row"><span>NovaPlay Beta</span> <span class="tag" id="v-beta">...</span></div>
+                <div class="version-row"><span>KillerTV</span> <span class="tag" id="v-killer">...</span></div>
+            </div>
+            <p style="font-size: 11px; color:var(--text-muted); margin-top: 15px; margin-bottom: 20px;">* Los datos se sincronizan automáticamente cada hora.</p>
+            <a href="https://novaplaytv.github.io/NovaApps/" class="btn-launch">
+                <i class="fas fa-store"></i> IR A DESCARGAS
+            </a>
+        </div>
     </div>
-</div>
 </main>
 
 <footer>
@@ -221,9 +227,10 @@
     }
 
     async function iniciarSesion() {
-        const u = document.getElementById("username").value;
-        const p = document.getElementById("password").value;
+        const u = document.getElementById("username").value.trim();
+        const p = document.getElementById("password").value.trim();
         const btn = document.getElementById("loginButton");
+        if (!u || !p) return;
         btn.disabled = true; btn.innerText = "VERIFICANDO...";
 
         const res = await req({ action: "login", username: u, password: p });
@@ -250,13 +257,13 @@
         const users = await req({ action: "seguridad_listar_usuarios" });
         const black = await req({ action: "seguridad_listar_blacklist" });
         const logs = await req({ action: "listar_logs" });
-        document.getElementById('count-users').innerText = users.length || 0;
-        document.getElementById('count-blocked').innerText = black.length || 0;
-        document.getElementById('count-logs').innerText = logs.length || 0;
+        if (users) document.getElementById('count-users').innerText = users.length || 0;
+        if (black) document.getElementById('count-blocked').innerText = black.length || 0;
+        if (logs) document.getElementById('count-logs').innerText = logs.length || 0;
 
         // 2. Resumen de Canales
         const channelsData = await req({ action: "obtener_json" });
-        if (channelsData.json) {
+        if (channelsData && channelsData.json) {
             let total = 0, inactive = 0;
             channelsData.json.forEach(cat => {
                 total += (cat.items || []).length;
@@ -276,6 +283,8 @@
             document.getElementById('v-killer').innerText = "v" + dataApps.killer.version;
         } catch(e) {}
     }
+
+    document.getElementById("password").addEventListener("keydown", e => { if (e.key === "Enter") iniciarSesion(); });
 
     if (sessionToken) UI_MostrarPanel(), loadSummary();
     else UI_MostrarLogin();
