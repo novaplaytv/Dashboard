@@ -59,19 +59,26 @@
         .app-container { width: 100%; max-width: 1300px; padding: 40px 25px; display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 25px; align-items: start; }
 
         /* Cards */
-        .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 28px; padding: 35px; box-shadow: 0 15px 40px rgba(0,0,0,0.4); display: flex; flex-direction: column; align-items: center; text-align: center; transition: 0.3s; position: relative; overflow: hidden; height: 100%; min-height: 480px; }
+        .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 28px; padding: 40px; box-shadow: 0 15px 40px rgba(0,0,0,0.4); display: flex; flex-direction: column; align-items: center; text-align: center; transition: 0.3s; position: relative; overflow: hidden; min-height: 520px; justify-content: space-between; }
         .card:hover { transform: translateY(-5px); border-color: var(--primary); }
-        .card h2 { font-size: 18px; font-weight: 900; margin-bottom: 25px; display: flex; align-items: center; justify-content: center; gap: 10px; text-transform: uppercase; color: var(--text-muted); width: 100%; }
-        .card h2 i { color: var(--primary); }
+        .card h2 { font-size: 18px; font-weight: 900; margin-bottom: 25px; display: flex; align-items: center; justify-content: center; gap: 12px; text-transform: uppercase; color: var(--text-muted); width: 100%; }
+        .card h2 i { font-size: 20px; color: var(--primary); }
 
         /* Resúmenes */
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
-        .stat-box { background: rgba(255,255,255,0.03); padding: 20px; border-radius: 20px; border: 1px solid var(--border); text-align: center; }
-        .stat-box .value { display: block; font-size: 28px; font-weight: 900; color: #fff; }
-        .stat-box .label { font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-top: 5px; }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%; margin-bottom: 30px; }
+        .stat-box { background: rgba(255,255,255,0.03); padding: 25px 15px; border-radius: 24px; border: 1px solid var(--border); text-align: center; flex: 1; }
+        .stat-box .value { display: block; font-size: 32px; font-weight: 900; color: #fff; line-height: 1; }
+        .stat-box .label { font-size: 10px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-top: 8px; letter-spacing: 1px; }
+
+        /* Info Rows */
+        .info-container { width: 100%; margin-bottom: 30px; }
+        .version-row { display: flex; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 14px; width: 100%; align-items: center; }
+        .version-row span:first-child { color: var(--text-muted); font-weight: 600; }
+        .version-row .tag { font-weight: 900; color: var(--warning); background: rgba(255,187,0,0.1); padding: 4px 10px; border-radius: 8px; font-size: 12px; }
+        .version-row .val { font-weight: 700; color: #fff; }
 
         /* Lanzadores */
-        .btn-launch { width: 100%; padding: 18px; border-radius: 18px; background: #fff; color: #000; text-decoration: none; font-weight: 800; font-size: 14px; text-align: center; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.3s; margin-top: auto; }
+        .btn-launch { width: 100%; padding: 18px; border-radius: 20px; background: #fff; color: #000; text-decoration: none; font-weight: 900; font-size: 13px; text-align: center; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.3s; text-transform: uppercase; letter-spacing: 0.5px; }
         .btn-launch:hover { background: var(--primary); color: #fff; transform: scale(1.02); }
 
         /* Login */
@@ -85,11 +92,6 @@
         .form-group label { display: block; margin-bottom: 8px; font-size: 11px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; }
 
         .btn-primary { background: var(--primary); color: #fff; border: none; cursor: pointer; transition: 0.2s; }
-
-        /* Versiones */
-        .version-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 14px; width: 100%; }
-        .version-row .tag { font-weight: 900; color: var(--warning); }
-        .version-row .val { font-weight: 600; }
 
         .hidden { display: none !important; }
         ::-webkit-scrollbar { width: 8px; }
@@ -146,8 +148,10 @@
                     <span class="label">Bloqueados</span>
                 </div>
             </div>
-            <div class="version-row"><span>Estado del Búnker</span> <span class="tag" style="color:var(--success)">PROTEGIDO</span></div>
-            <div class="version-row"><span>Alertas Recientes</span> <span id="count-logs">0</span></div>
+            <div class="info-container">
+                <div class="version-row"><span>Estado del Búnker</span> <span class="tag" style="color:var(--success); background:rgba(16,185,129,0.1)">PROTEGIDO</span></div>
+                <div class="version-row"><span>Alertas Recientes</span> <span class="val" id="count-logs">0</span></div>
+            </div>
             <a href="https://novaplaytv.github.io/NovaSecurity/" class="btn-launch">
                 <i class="fas fa-external-link-alt"></i> ABRIR SEGURIDAD
             </a>
@@ -166,8 +170,10 @@
                     <span class="label">En Mant.</span>
                 </div>
             </div>
-            <div class="version-row"><span>Fuente Principal</span> <span class="val">novaplay.json</span></div>
-            <div class="version-row"><span>Categorías</span> <span id="count-cats">0</span></div>
+            <div class="info-container">
+                <div class="version-row"><span>Fuente Principal</span> <span class="val">novaplay.json</span></div>
+                <div class="version-row"><span>Categorías</span> <span class="val" id="count-cats">0</span></div>
+            </div>
             <a href="https://novaplaytv.github.io/panel-canales/" class="btn-launch">
                 <i class="fas fa-list"></i> GESTIONAR CANALES
             </a>
@@ -175,13 +181,13 @@
 
         <!-- Aplicaciones Widget -->
         <div class="card">
-            <h2><i class="fas fa-download"></i> Actualizaciones & APKs</h2>
-            <div id="apps-container">
+            <h2><i class="fas fa-download"></i> Versiones & APKs</h2>
+            <div class="info-container" style="margin-top: 10px;">
                 <div class="version-row"><span>NovaPlay Estable</span> <span class="tag" id="v-stable">...</span></div>
-                <div class="version-row"><span>NovaPlay Beta</span> <span class="tag" id="v-beta">...</span></div>
-                <div class="version-row"><span>KillerTV</span> <span class="tag" id="v-killer">...</span></div>
+                <div class="version-row"><span>NovaPlay Beta</span> <span class="tag" id="v-beta" style="color:var(--primary); background:rgba(229,9,20,0.1)">...</span></div>
+                <div class="version-row"><span>KillerTV</span> <span class="tag" id="v-killer" style="color:var(--success); background:rgba(16,185,129,0.1)">...</span></div>
             </div>
-            <p style="font-size: 11px; color:var(--text-muted); margin-top: 15px; margin-bottom: 20px;">* Los datos se sincronizan automáticamente cada hora.</p>
+            <p style="font-size: 10px; color:var(--text-muted); margin-bottom: 25px; line-height: 1.4;">* Los datos se sincronizan automáticamente con el repositorio updater.</p>
             <a href="https://novaplaytv.github.io/NovaApps/" class="btn-launch">
                 <i class="fas fa-store"></i> IR A DESCARGAS
             </a>
