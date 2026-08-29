@@ -53,7 +53,7 @@
         .btn-logout { background: var(--error); box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3); }
 
         /* Contenedor Principal */
-        .app-container { max-width: 1300px; margin: calc(var(--nav-height) + 40px) auto; padding: 0 25px; display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 25px; overflow-y: auto; max-height: calc(100vh - var(--nav-height) - 80px); }
+        .app-container { max-width: 1300px; margin: 40px auto; padding: 0 25px; display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 25px; align-items: start; }
 
         /* Cards */
         .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 28px; padding: 35px; box-shadow: 0 15px 40px rgba(0,0,0,0.4); display: flex; flex-direction: column; transition: 0.3s; position: relative; overflow: hidden; }
@@ -95,7 +95,7 @@
 
 <nav class="nova-nav">
     <div class="nav-inner">
-        <a class="nav-brand" href="#">
+        <a class="nav-brand" href="https://novaplaytv.github.io/">
             <img src="https://raw.githubusercontent.com/novaplaytv/novaimg/main/novasplash.webp">
             NOVAPLAY
         </a>
@@ -107,6 +107,8 @@
         </div>
     </div>
 </nav>
+
+<main style="margin-top: var(--nav-height); min-height: calc(100vh - var(--nav-height) - 140px); display: flex; align-items: center; justify-content: center;">
 
 <div id="auth-view" class="hidden">
     <div class="auth-card">
@@ -179,8 +181,8 @@
             <i class="fas fa-store"></i> IR A DESCARGAS
         </a>
     </div>
-
 </div>
+</main>
 
 <footer>
     <div class="footer-text">
