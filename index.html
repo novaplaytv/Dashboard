@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>NovaPlay | Dashboard</title>
+    <link rel="icon" type="image/webp" href="https://raw.githubusercontent.com/novaplaytv/novaimg/main/novasplash.webp">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #e50914;
+            --primary-hover: #b91c1c;
+            --bg: #080a10;
+            --card-bg: #11151f;
+            --input-bg: #1a1f2e;
+            --text: #ffffff;
+            --text-muted: #9aa3b2;
+            --border: rgba(255,255,255,0.05);
+            --success: #10b981;
+            --warning: #ffbb00;
+            --nav-height: 70px;
+        }
+
+        * { box-sizing: border-box; outline: none; margin: 0; padding: 0; }
+        html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+
+        /* Navegación */
+        nav { position: fixed; top: 0; width: 100%; height: var(--nav-height); background: rgba(0,0,0,0.8); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); z-index: 1000; display: flex; align-items: center; padding: 0 30px; justify-content: space-between; }
+        .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: #fff; font-weight: 900; font-size: 20px; letter-spacing: -0.5px; }
+        .brand img { width: 32px; border-radius: 6px; }
+
+        /* Contenedor Principal */
+        .app-container { max-width: 1300px; margin: calc(var(--nav-height) + 40px) auto; padding: 0 25px; display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 25px; }
+
+        /* Cards */
+        .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 28px; padding: 35px; box-shadow: 0 15px 40px rgba(0,0,0,0.4); display: flex; flex-direction: column; transition: 0.3s; position: relative; overflow: hidden; }
+        .card:hover { transform: translateY(-5px); border-color: var(--primary); }
+        .card h2 { font-size: 18px; font-weight: 900; margin-bottom: 25px; display: flex; align-items: center; gap: 10px; text-transform: uppercase; color: var(--text-muted); }
+        .card h2 i { color: var(--primary); }
+
+        /* Resúmenes */
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
+        .stat-box { background: rgba(255,255,255,0.03); padding: 20px; border-radius: 20px; border: 1px solid var(--border); text-align: center; }
+        .stat-box .value { display: block; font-size: 28px; font-weight: 900; color: #fff; }
+        .stat-box .label { font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-top: 5px; }
+
+        /* Lanzadores */
+        .btn-launch { width: 100%; padding: 18px; border-radius: 18px; background: #fff; color: #000; text-decoration: none; font-weight: 800; font-size: 14px; text-align: center; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.3s; margin-top: auto; }
+        .btn-launch:hover { background: var(--primary); color: #fff; transform: scale(1.02); }
+
+        /* Login */
+        #auth-view { position: fixed; inset: 0; background: var(--bg); z-index: 10001; display: flex; justify-content: center; align-items: center; }
+        .auth-card { width: 400px; padding: 50px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 35px; text-align: center; }
+        .auth-card input { width: 100%; padding: 16px; background: var(--bg); border: 1px solid var(--border); border-radius: 14px; color: #fff; margin-bottom: 15px; font-size: 15px; }
+        .btn-login { width: 100%; padding: 18px; background: var(--primary); color: #fff; border-radius: 14px; font-weight: 900; border: none; cursor: pointer; transition: 0.2s; }
+        .btn-login:hover { background: var(--primary-hover); transform: scale(1.02); }
+
+        /* Versiones */
+        .version-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 14px; }
+        .version-row .tag { font-weight: 900; color: var(--warning); }
+        .version-row .val { font-weight: 600; }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="#" class="brand"><img src="https://raw.githubusercontent.com/novaplaytv/novaimg/main/novasplash.webp"> NovaPlay Dashboard</a>
+    <button class="btn-login" style="width:auto; padding: 10px 20px; font-size: 12px;" id="btnLogout" onclick="cerrarSesion()">SALIR</button>
+</nav>
+
+<div id="auth-view" class="hidden">
+    <div class="auth-card">
+        <h2 style="margin-bottom:30px; font-weight:900; font-size: 24px;">Panel de Control</h2>
+        <input type="text" id="username" placeholder="Usuario">
+        <input type="password" id="password" placeholder="Contraseña">
+        <button class="btn-login" id="loginButton" onclick="iniciarSesion()">ENTRAR AL DASHBOARD</button>
+        <div id="loginStatus" style="margin-top:15px; color:var(--primary); font-weight:800; display:none;">Acceso Denegado</div>
+    </div>
+</div>
+
+<div class="app-container hidden" id="main-panel">
+
+    <!-- Seguridad Widget -->
+    <div class="card">
+        <h2><i class="fas fa-shield-alt"></i> Seguridad & Accesos</h2>
+        <div class="stats-grid">
+            <div class="stat-box">
+                <span class="value" id="count-users">0</span>
+                <span class="label">Activos</span>
+            </div>
+            <div class="stat-box">
+                <span class="value" id="count-blocked" style="color:var(--primary)">0</span>
+                <span class="label">Bloqueados</span>
+            </div>
+        </div>
+        <div class="version-row"><span>Estado del Búnker</span> <span class="tag" style="color:var(--success)">PROTEGIDO</span></div>
+        <div class="version-row"><span>Alertas Sniffer</span> <span id="count-logs">0</span></div>
+        <a href="https://novaplaytv.github.io/NovaSecurity/" class="btn-launch">
+            <i class="fas fa-external-link-alt"></i> ABRIR SEGURIDAD
+        </a>
+    </div>
+
+    <!-- Canales Widget -->
+    <div class="card">
+        <h2><i class="fas fa-tv"></i> Gestión de Contenidos</h2>
+        <div class="stats-grid">
+            <div class="stat-box">
+                <span class="value" id="count-total-ch">0</span>
+                <span class="label">Canales</span>
+            </div>
+            <div class="stat-box">
+                <span class="value" id="count-inactive-ch" style="color:var(--warning)">0</span>
+                <span class="label">En Mant.</span>
+            </div>
+        </div>
+        <div class="version-row"><span>Fuente Principal</span> <span class="val">novaplay.json</span></div>
+        <div class="version-row"><span>Categorías</span> <span id="count-cats">0</span></div>
+        <a href="https://novaplaytv.github.io/panel-canales/" class="btn-launch">
+            <i class="fas fa-list"></i> GESTIONAR CANALES
+        </a>
+    </div>
+
+    <!-- Aplicaciones Widget -->
+    <div class="card">
+        <h2><i class="fas fa-download"></i> Actualizaciones & APKs</h2>
+        <div id="apps-container">
+            <div class="version-row"><span>NovaPlay Estable</span> <span class="tag" id="v-stable">v4.5.1</span></div>
+            <div class="version-row"><span>NovaPlay Beta</span> <span class="tag" id="v-beta">v4.5.1</span></div>
+            <div class="version-row"><span>KillerTV</span> <span class="tag" id="v-killer">v1.3.0</span></div>
+        </div>
+        <p style="font-size: 11px; color:var(--text-muted); margin-top: 15px; margin-bottom: 20px;">* Los datos se sincronizan automáticamente con el repositorio updater cada hora.</p>
+        <a href="https://novaplaytv.github.io/NovaApps/" class="btn-launch">
+            <i class="fas fa-store"></i> IR A LA TIENDA
+        </a>
+    </div>
+
+</div>
+
+<script>
+    const API_URL = "https://mrghnngupolsgatcmevw.supabase.co/functions/v1/actualizar-canales";
+    let sessionToken = localStorage.getItem("novaplay_session_token") || "";
+
+    async function req(body) {
+        const h = { "Content-Type": "application/json" };
+        if (sessionToken) h.Authorization = "Bearer " + sessionToken;
+        try {
+            const r = await fetch(API_URL, { method: "POST", headers: h, body: JSON.stringify(body) });
+            return await r.json();
+        } catch (e) { return { error: "Red" }; }
+    }
+
+    async function iniciarSesion() {
+        const u = document.getElementById("username").value;
+        const p = document.getElementById("password").value;
+        const res = await req({ action: "login", username: u, password: p });
+        if (res.token) {
+            localStorage.setItem("novaplay_session_token", res.token);
+            location.reload();
+        } else {
+            document.getElementById("loginStatus").style.display = "block";
+        }
+    }
+
+    function cerrarSesion() { localStorage.removeItem("novaplay_session_token"); location.reload(); }
+
+    async function loadSummary() {
+        if (!sessionToken) return;
+        document.getElementById("auth-view").classList.add("hidden");
+        document.getElementById("main-panel").classList.remove("hidden");
+
+        // 1. Resumen de Seguridad
+        const users = await req({ action: "seguridad_listar_usuarios" });
+        const black = await req({ action: "seguridad_listar_blacklist" });
+        const logs = await req({ action: "listar_logs" });
+        document.getElementById('count-users').innerText = users.length || 0;
+        document.getElementById('count-blocked').innerText = black.length || 0;
+        document.getElementById('count-logs').innerText = logs.length || 0;
+
+        // 2. Resumen de Canales
+        const channelsData = await req({ action: "obtener_json" });
+        if (channelsData.json) {
+            let total = 0, inactive = 0;
+            channelsData.json.forEach(cat => {
+                total += (cat.items || []).length;
+                cat.items.forEach(ch => { if (String(ch.status) === 'false') inactive++; });
+            });
+            document.getElementById('count-total-ch').innerText = total;
+            document.getElementById('count-inactive-ch').innerText = inactive;
+            document.getElementById('count-cats').innerText = channelsData.json.length;
+        }
+
+        // 3. Resumen de Apps (Leemos el app_data.json de NovaApps si es posible o usamos los json de updater)
+        try {
+            const resApps = await fetch("https://raw.githubusercontent.com/novaplaytv/NovaApps/main/app_data.json");
+            const dataApps = await resApps.json();
+            document.getElementById('v-stable').innerText = "v" + dataApps.stable.version;
+            document.getElementById('v-beta').innerText = "v" + dataApps.beta.version;
+            document.getElementById('v-killer').innerText = "v" + dataApps.killer.version;
+        } catch(e) {}
+    }
+
+    if (sessionToken) loadSummary(); else document.getElementById("auth-view").classList.remove("hidden");
+</script>
+</body>
+</html>
