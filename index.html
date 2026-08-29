@@ -59,7 +59,7 @@
         .app-container { width: 100%; max-width: 1300px; padding: 40px 25px; display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 25px; align-items: start; }
 
         /* Cards */
-        .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 28px; padding: 35px; box-shadow: 0 15px 40px rgba(0,0,0,0.4); display: flex; flex-direction: column; transition: 0.3s; position: relative; overflow: hidden; }
+        .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 28px; padding: 35px; box-shadow: 0 15px 40px rgba(0,0,0,0.4); display: flex; flex-direction: column; transition: 0.3s; position: relative; overflow: hidden; height: 100%; min-height: 480px; }
         .card:hover { transform: translateY(-5px); border-color: var(--primary); }
         .card h2 { font-size: 18px; font-weight: 900; margin-bottom: 25px; display: flex; align-items: center; gap: 10px; text-transform: uppercase; color: var(--text-muted); }
         .card h2 i { color: var(--primary); }
@@ -109,7 +109,6 @@
         </a>
         <div class="nav-links">
             <a href="https://novaplaytv.github.io/">INICIO</a>
-            <a href="https://novaplaytv.github.io/NovaApps/">DESCARGAS</a>
             <button class="btn-login-nav" id="navLogin" onclick="UI_MostrarLogin()">INGRESAR</button>
             <button class="btn-logout" id="navLogout" onclick="cerrarSesion()">SALIR</button>
         </div>
