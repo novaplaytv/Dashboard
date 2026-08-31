@@ -26,7 +26,7 @@
         * { box-sizing: border-box; outline: none; margin: 0; padding: 0; }
         html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; overflow: hidden; -webkit-font-smoothing: antialiased; }
 
-        /* NavegaciÃ³n Premium */
+        /* Navegación Premium */
         .nova-nav { position: fixed; top: 0; width: 100%; z-index: 10000; background: rgba(0,0,0,0.7); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.05); transition: 0.3s; }
         .nav-inner { max-width: 1400px; margin: auto; height: var(--nav-height); padding: 0 30px; display: flex; align-items: center; justify-content: space-between; }
         .nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: #fff; font-weight: 900; font-size: 22px; letter-spacing: -1px; }
@@ -54,17 +54,17 @@
         .btn-logout { display: none; background: var(--error); box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3); }
         .btn-logout:hover { transform: scale(1.05); filter: brightness(1.2); }
 
-        /* Dropdown de AdministraciÃ³n Premium - FIX DEFINITIVO */
-        .admin-menu { position: relative; display: none; padding: 10px 0; margin: -10px 0; }
-        .btn-admin { background: #fff; color: #000; font-weight: 900; border: none; cursor: pointer; padding: 10px 20px; border-radius: 12px; font-size: 13px; display: flex; align-items: center; gap: 10px; transition: 0.2s; position: relative; z-index: 10002; }
+        /* Dropdown de Administración Premium - BLINDAJE TOTAL V4 */
+        .admin-menu { position: relative; display: none; align-items: center; height: var(--nav-height); padding: 0 10px; margin: 0 -10px; }
+        .btn-admin { background: #fff; color: #000; font-weight: 900; border: none; cursor: pointer; padding: 10px 20px; border-radius: 12px; font-size: 13px; display: flex; align-items: center; gap: 10px; transition: 0.3s; position: relative; z-index: 10002; }
         .btn-admin:hover { background: var(--primary); color: #fff; box-shadow: 0 0 20px rgba(229,9,20,0.4); }
-        .dropdown-content { position: absolute; top: 100%; right: 0; background: var(--card-bg); min-width: 260px; border-radius: 20px; border: 1px solid var(--border); overflow: hidden; display: none; flex-direction: column; box-shadow: 0 20px 50px rgba(0,0,0,0.8); z-index: 10001; margin-top: 5px; }
-        .dropdown-content::before { content: ""; position: absolute; top: -30px; left: 0; right: 0; height: 40px; background: transparent; }
-        .admin-menu:hover .dropdown-content { display: flex; }
-        .dropdown-content a { padding: 15px 20px; color: #fff; text-decoration: none; font-size: 13px; font-weight: 700; border-bottom: 1px solid rgba(255,255,255,0.03); transition: 0.2s; display: flex; align-items: center; gap: 12px; }
-        .dropdown-content a i { width: 20px; color: var(--primary); text-align: center; }
-        .dropdown-content a:hover { background: rgba(255,255,255,0.05); padding-left: 25px; }
-        .dropdown-content .logout-link { color: var(--error); border-bottom: none; }
+        .dropdown-content { position: absolute; top: 100%; right: 0; background: var(--card-bg); min-width: 280px; border-radius: 24px; border: 1px solid var(--border); overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 25px 60px rgba(0,0,0,0.9); z-index: 10001; margin-top: -10px; opacity: 0; visibility: hidden; transform: translateY(10px); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1), visibility 0s 0.3s; }
+        .admin-menu:hover .dropdown-content { opacity: 1; visibility: visible; transform: translateY(0); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1), visibility 0s 0s; }
+        .dropdown-content::before { content: ''; position: absolute; top: -50px; left: -50px; right: -50px; height: 100px; background: transparent; z-index: -1; }
+        .dropdown-content a { padding: 16px 25px; color: #fff !important; text-decoration: none !important; font-size: 13px !important; font-weight: 700 !important; border-bottom: 1px solid rgba(255,255,255,0.03); transition: 0.2s; display: flex; align-items: center; gap: 15px; }
+        .dropdown-content a i { width: 20px; color: var(--primary); text-align: center; font-size: 16px; }
+        .dropdown-content a:hover { background: rgba(255,255,255,0.05); padding-left: 30px; color: var(--primary) !important; }
+        .dropdown-content .logout-link { color: var(--error) !important; border-bottom: none; }
         .dropdown-content .logout-link i { color: var(--error); }
 
         /* Contenedor Principal */
@@ -77,7 +77,7 @@
         .card h2 { font-size: 18px; font-weight: 900; margin-bottom: 25px; display: flex; align-items: center; justify-content: center; gap: 12px; text-transform: uppercase; color: var(--text-muted); width: 100%; }
         .card h2 i { font-size: 20px; color: var(--primary); }
 
-        /* ResÃºmenes */
+        /* Resúmenes */
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%; margin-bottom: 30px; }
         .stat-box { background: rgba(255,255,255,0.03); padding: 25px 15px; border-radius: 24px; border: 1px solid var(--border); text-align: center; flex: 1; }
         .stat-box .value { display: block; font-size: 32px; font-weight: 900; color: #fff; line-height: 1; }
@@ -144,9 +144,9 @@
                     <a href="https://novaplaytv.github.io/Dashboard/"><i class="fas fa-chart-line"></i> Dashboard Central</a>
                     <a href="https://novaplaytv.github.io/panel-canales/"><i class="fas fa-tv"></i> Admin. Canales</a>
                     <a href="https://novaplaytv.github.io/NovaSecurity/"><i class="fas fa-shield-alt"></i> NovaSecurity</a>
-                    <a href="https://novaplaytv.github.io/SignalVerificador/"><i class="fas fa-broadcast-tower"></i> Verificador de SeÃ±al</a>
-                    <a href="https://novaplaytv.github.io/novaimg/"><i class="fas fa-icons"></i> GestiÃ³n de Iconos</a>
-                    <a href="#" onclick="cerrarSesion(); return false;" class="logout-link"><i class="fas fa-sign-out-alt"></i> Cerrar SesiÃ³n</a>
+                    <a href="https://novaplaytv.github.io/SignalVerificador/"><i class="fas fa-broadcast-tower"></i> Verificador de Señal</a>
+                    <a href="https://novaplaytv.github.io/novaimg/"><i class="fas fa-icons"></i> Gestión de Iconos</a>
+                    <a href="#" onclick="cerrarSesion(); return false;" class="logout-link"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a>
                 </div>
             </div>
         </div>
@@ -162,8 +162,8 @@
                 <input type="text" id="username" placeholder="Usuario">
             </div>
             <div class="form-group">
-                <label>ContraseÃ±a</label>
-                <input type="password" id="password" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢">
+                <label>Contraseña</label>
+                <input type="password" id="password" placeholder="••••••••">
             </div>
             <button class="btn-primary" id="loginButton" style="width:100%; justify-content:center; padding: 18px; border-radius: 14px; font-weight: 900;" onclick="iniciarSesion()">ENTRAR AL PANEL</button>
             <div id="loginStatus" class="status"></div>
@@ -185,7 +185,7 @@
                 </div>
             </div>
             <div class="info-container">
-                <div class="version-row"><span>Estado del BÃºnker</span> <span class="tag" style="color:var(--success); background:rgba(16,185,129,0.1)">PROTEGIDO</span></div>
+                <div class="version-row"><span>Estado del Búnker</span> <span class="tag" style="color:var(--success); background:rgba(16,185,129,0.1)">PROTEGIDO</span></div>
                 <div class="version-row"><span>Alertas Recientes</span> <span class="val" id="count-logs">0</span></div>
             </div>
             <a href="https://novaplaytv.github.io/NovaSecurity/" class="btn-launch">
@@ -195,7 +195,7 @@
 
         <!-- Canales Widget -->
         <div class="card">
-            <h2><i class="fas fa-tv"></i> GestiÃ³n de Contenidos</h2>
+            <h2><i class="fas fa-tv"></i> Gestión de Contenidos</h2>
             <div class="stats-grid">
                 <div class="stat-box">
                     <span class="value" id="count-total-ch">0</span>
@@ -208,7 +208,7 @@
             </div>
             <div class="info-container">
                 <div class="version-row"><span>Fuente Principal</span> <span class="val">novaplay.json</span></div>
-                <div class="version-row"><span>CategorÃ­as</span> <span class="val" id="count-cats">0</span></div>
+                <div class="version-row"><span>Categorías</span> <span class="val" id="count-cats">0</span></div>
             </div>
             <a href="https://novaplaytv.github.io/panel-canales/" class="btn-launch">
                 <i class="fas fa-list"></i> GESTIONAR CANALES
@@ -223,7 +223,7 @@
                 <div class="version-row"><span>NovaPlay Beta</span> <span class="tag" id="v-beta" style="color:var(--primary); background:rgba(229,9,20,0.1)">...</span></div>
                 <div class="version-row"><span>KillerTV</span> <span class="tag" id="v-killer" style="color:var(--success); background:rgba(16,185,129,0.1)">...</span></div>
             </div>
-            <p style="font-size: 10px; color:var(--text-muted); margin-bottom: 25px; line-height: 1.4;">* Los datos se sincronizan automÃ¡ticamente con el repositorio updater.</p>
+            <p style="font-size: 10px; color:var(--text-muted); margin-bottom: 25px; line-height: 1.4;">* Los datos se sincronizan automáticamente con el repositorio updater.</p>
             <a href="https://novaplaytv.github.io/NovaApps/" class="btn-launch">
                 <i class="fas fa-store"></i> IR A DESCARGAS
             </a>
@@ -234,9 +234,10 @@
 <div class="nova-modal-overlay" id="novaModal">
     <div class="nova-modal">
         <h3 id="modalTitle">Confirmar</h3>
-        <p id="modalMessage">Â¿Deseas realizar esta acciÃ³n?</p>
+        <p id="modalMessage">¿Deseas realizar esta acción?</p>
         <div id="modalInputContainer" class="hidden">
             <input type="text" id="modalInput" placeholder="...">
+            <select id="modalSelect" class="hidden"></select>
         </div>
         <div class="nova-modal-btns">
             <button class="nova-modal-btn btn-cancel" id="modalCancel">CANCELAR</button>
@@ -247,8 +248,8 @@
 
 <footer>
     <div class="footer-text">
-        Â© 2026 NOVAPLAY TV<br>
-        Â© 2010 - 2026 - MSGT. TODOS LOS DERECHOS RESERVADOS
+        © 2026 NOVAPLAY TV<br>
+        © 2010 - 2026 - MSGT. TODOS LOS DERECHOS RESERVADOS
     </div>
 </footer>
 
@@ -303,21 +304,46 @@
         }
     }
 
-    function openModal(title, msg, onConfirm, isPrompt = false, defaultValue = "") {
+    /* NovaModal Premium */
+    function openModal(title, msg, onConfirm, type = "confirm", options = [], defaultValue = "") {
         const m = document.getElementById("novaModal");
+        if (!m) return;
         document.getElementById("modalTitle").innerText = title;
         document.getElementById("modalMessage").innerText = msg;
         const inputContainer = document.getElementById("modalInputContainer");
         const input = document.getElementById("modalInput");
-        if (isPrompt) { inputContainer.classList.remove("hidden"); input.value = defaultValue; }
-        else { inputContainer.classList.add("hidden"); }
+        const select = document.getElementById("modalSelect");
+
+        if (inputContainer) inputContainer.classList.add("hidden");
+        if (input) input.classList.add("hidden");
+        if (select) select.classList.add("hidden");
+
+        if (type === "prompt") {
+            inputContainer.classList.remove("hidden");
+            input.classList.remove("hidden");
+            input.value = defaultValue;
+            setTimeout(() => input.focus(), 100);
+        } else if (type === "select") {
+            inputContainer.classList.remove("hidden");
+            select.classList.remove("hidden");
+            select.innerHTML = options.map(o => `<option value="${o.value}">${o.text}</option>`).join('');
+            setTimeout(() => select.focus(), 100);
+        }
+
         m.style.display = "flex";
-        document.getElementById("modalCancel").onclick = () => m.style.display = "none";
-        document.getElementById("modalConfirm").onclick = () => { if (isPrompt) onConfirm(input.value); else onConfirm(); m.style.display = "none"; };
+
+        const close = () => { m.style.display = "none"; };
+        document.getElementById("modalCancel").onclick = close;
+        document.getElementById("modalConfirm").onclick = () => {
+            if (type === "prompt") onConfirm(input.value);
+            else if (type === "select") onConfirm(select.value);
+            else onConfirm();
+            close();
+        };
     }
 
     function cerrarSesion() {
-        openModal("Cerrar SesiÃ³n", "Â¿EstÃ¡s seguro que deseas salir del Dashboard?", () => {
+        openModal("Cerrar Sesión", "¿Estás seguro que deseas salir del Dashboard?", () => {
             localStorage.removeItem("novaplay_session_token");
             location.reload();
         });
