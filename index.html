@@ -171,6 +171,20 @@
     </div>
 
     <div class="app-container hidden" id="main-panel">
+        <!-- Modo Mantenimiento Widget -->
+        <div class="card">
+            <h2><i class="fas fa-tools"></i> Estado del Servicio</h2>
+            <div id="maint-status-container" style="margin-bottom: 30px;">
+                <span id="maint-badge" class="tag" style="padding: 10px 25px; border-radius: 15px; font-size: 14px; font-weight: 900; color: #fff;">CARGANDO...</span>
+            </div>
+            <div class="info-container">
+                <p id="maint-desc" style="font-size: 12px; color: var(--text-muted); line-height: 1.5; margin-bottom: 20px;">Controla el acceso global a la aplicación NovaPlay.</p>
+            </div>
+            <button id="btn-toggle-maint" class="btn-launch" onclick="confirmarToggleMantenimiento()">
+                <i class="fas fa-power-off"></i> <span id="btn-maint-text">CAMBIAR ESTADO</span>
+            </button>
+        </div>
+
         <!-- Seguridad Widget -->
         <div class="card">
             <h2><i class="fas fa-shield-alt"></i> Seguridad & Accesos</h2>
@@ -256,6 +270,20 @@
 <script>
     const API_URL = "https://mrghnngupolsgatcmevw.supabase.co/functions/v1/actualizar-canales";
     let sessionToken = localStorage.getItem("novaplay_session_token") || "";
+    let maintenanceEnabled = false;
+
+    function novaToast(message, type = 'success') {
+        const toast = document.createElement("div");
+        toast.style.cssText = `position:fixed; bottom:20px; right:20px; background:${type === 'success' ? '#10b981' : '#ef4444'}; color:white; padding:15px 25px; border-radius:12px; font-weight:800; z-index:20000; animation: toast-in 0.4s ease; box-shadow: 0 10px 30px rgba(0,0,0,0.5);`;
+        toast.textContent = (type === 'success' ? "✔ " : "✖ ") + message;
+        document.body.appendChild(toast);
+        setTimeout(() => {
+            toast.style.opacity = "0";
+            toast.style.transform = "translateX(20px)";
+            toast.style.transition = "0.3s";
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    }
 
     async function req(body) {
         const h = { "Content-Type": "application/json" };
@@ -352,6 +380,9 @@
     async function loadSummary() {
         if (!sessionToken) return;
 
+        // 0. Estado de Mantenimiento
+        loadMaintenanceStatus();
+
         // 1. Resumen de Seguridad
         const users = await req({ action: "seguridad_listar_usuarios" });
         const black = await req({ action: "seguridad_listar_blacklist" });
@@ -381,6 +412,68 @@
             document.getElementById('v-beta').innerText = "v" + dataApps.beta.version;
             document.getElementById('v-killer').innerText = "v" + dataApps.killer.version;
         } catch(e) {}
+    }
+
+    async function loadMaintenanceStatus() {
+        const res = await req({ action: "obtener_mantenimiento" });
+        if (res && res.json) {
+            maintenanceEnabled = !res.json.success;
+            updateMaintenanceUI();
+        }
+    }
+
+    function updateMaintenanceUI() {
+        const badge = document.getElementById('maint-badge');
+        const btnText = document.getElementById('btn-maint-text');
+        const btn = document.getElementById('btn-toggle-maint');
+
+        if (maintenanceEnabled) {
+            badge.innerText = "MANTENIMIENTO ACTIVO";
+            badge.style.color = "var(--error)";
+            badge.style.background = "rgba(239, 68, 68, 0.1)";
+            btnText.innerText = "DESACTIVAR MANTENIMIENTO";
+            btn.style.background = "var(--success)";
+        } else {
+            badge.innerText = "SISTEMA OPERATIVO";
+            badge.style.color = "var(--success)";
+            badge.style.background = "rgba(16, 185, 129, 0.1)";
+            btnText.innerText = "ACTIVAR MANTENIMIENTO";
+            btn.style.background = "var(--error)";
+        }
+    }
+
+    function confirmarToggleMantenimiento() {
+        const accion = maintenanceEnabled ? "DESACTIVAR" : "ACTIVAR";
+        const msg = `¿Estás seguro que deseas ${accion} el Modo Mantenimiento?\n\n${maintenanceEnabled ? "Los usuarios podrán entrar a la app." : "Se bloqueará el acceso a todos los usuarios."}`;
+
+        openModal("Confirmar Estado", msg, async () => {
+            const btn = document.getElementById('btn-toggle-maint');
+            const span = document.getElementById('btn-maint-text');
+            btn.disabled = true;
+            const originalText = span.innerText;
+            span.innerText = "PROCESANDO...";
+
+            const newStatus = {
+                success: maintenanceEnabled, // Si estaba activo (maintEnabled=true), queremos success:true (desactivar maint)
+                title: "Servidor en Mantenimiento",
+                text: "Estamos realizando cambios en el servidor o estamos ajustando cambios para una actualización de la app. Disculpe los inconvenientes"
+            };
+
+            const res = await req({
+                action: "guardar_mantenimiento",
+                content: JSON.stringify(newStatus, null, 2)
+            });
+
+            if (res && res.success) {
+                maintenanceEnabled = !maintenanceEnabled;
+                updateMaintenanceUI();
+                novaToast("Estado actualizado correctamente", "success");
+            } else {
+                novaToast("Error al actualizar estado", "error");
+                span.innerText = originalText;
+            }
+            btn.disabled = false;
+        });
     }
 
     document.getElementById("password").addEventListener("keydown", e => { if (e.key === "Enter") iniciarSesion(); });
