@@ -427,7 +427,7 @@
     async function loadMaintenanceStatus() {
         const res = await req({ action: "obtener_mantenimiento" });
         if (res && res.json) {
-            maintenanceEnabled = !res.json.success;
+            maintenanceEnabled = res.json.success;
             updateMaintenanceUI();
         }
     }
@@ -457,7 +457,7 @@
             span.innerText = "PROCESANDO...";
 
             const newStatus = {
-                success: maintenanceEnabled,
+                success: !maintenanceEnabled,
                 title: "Servidor en Mantenimiento",
                 text: "Estamos realizando cambios en el servidor o estamos ajustando cambios para una actualización de la app. Disculpe los inconvenientes"
             };
