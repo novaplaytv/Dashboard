@@ -121,8 +121,12 @@
         .btn-launch:hover { background: var(--primary); color: #fff; transform: scale(1.02); }
 
         /* Charts */
-        .chart-container { width: 100%; height: 200px; position: relative; margin-top: 15px; }
+        .chart-container { width: 100%; height: 280px; position: relative; margin-top: 15px; }
         .card.wide { grid-column: 1 / -1; min-height: auto; }
+
+        .version-summary-list { width: 100%; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 20px; padding: 10px; background: rgba(255,255,255,0.02); border-radius: 15px; border: 1px solid var(--border); }
+        .v-item { padding: 6px 12px; border-radius: 10px; font-size: 10px; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 6px; border: 1px solid rgba(255,255,255,0.05); }
+        .v-item b { color: var(--primary); font-size: 12px; }
 
         @media (max-width: 900px) {
             .card.wide { grid-column: auto; }
@@ -326,6 +330,9 @@
 
         <div class="card">
             <h2><i class="fas fa-pie-chart"></i> Distribución de Versiones</h2>
+            <div id="version-summary-container" class="version-summary-list">
+                <!-- Se llena dinámicamente -->
+            </div>
             <div class="chart-container">
                 <canvas id="versionsChart"></canvas>
             </div>
@@ -364,9 +371,17 @@
     function initCharts(activityData, versionData) {
         const ctxActivity = document.getElementById('activityChart').getContext('2d');
         const ctxVersions = document.getElementById('versionsChart').getContext('2d');
+        const summaryContainer = document.getElementById('version-summary-container');
 
         if (charts.activity) charts.activity.destroy();
         if (charts.versions) charts.versions.destroy();
+
+        // Llenar resumen de texto arriba de la torta
+        if (summaryContainer) {
+            summaryContainer.innerHTML = versionData.labels.map((label, i) => {
+                return `<div class="v-item">${label}: <b>${versionData.values[i]}</b></div>`;
+            }).join('');
+        }
 
         // 1. Gráfico de Actividad (Barra)
         charts.activity = new Chart(ctxActivity, {
