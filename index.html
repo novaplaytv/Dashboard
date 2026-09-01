@@ -10,6 +10,7 @@
     <link rel="icon" type="image/webp" href="https://raw.githubusercontent.com/novaplaytv/novaimg/main/novasplash.webp">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
             --primary: #e50914;
@@ -117,6 +118,14 @@
         /* Lanzadores */
         .btn-launch { width: 100%; padding: 18px; border-radius: 20px; background: #fff; color: #000; text-decoration: none; font-weight: 900; font-size: 13px; text-align: center; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.3s; text-transform: uppercase; letter-spacing: 0.5px; }
         .btn-launch:hover { background: var(--primary); color: #fff; transform: scale(1.02); }
+
+        /* Charts */
+        .chart-container { width: 100%; height: 200px; position: relative; margin-top: 15px; }
+        .card.wide { grid-column: 1 / -1; min-height: auto; }
+
+        @media (max-width: 900px) {
+            .card.wide { grid-column: auto; }
+        }
 
         /* Login */
         #auth-view { position: fixed; inset: 0; background: var(--bg); z-index: 10001; display: flex; justify-content: center; align-items: center; }
@@ -305,6 +314,21 @@
                 <i class="fas fa-store"></i> IR A DESCARGAS
             </a>
         </div>
+
+        <!-- Gráficos de Actividad -->
+        <div class="card wide">
+            <h2 style="margin-bottom: 10px;"><i class="fas fa-chart-line"></i> Actividad de Usuarios (24h)</h2>
+            <div class="chart-container">
+                <canvas id="activityChart"></canvas>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2><i class="fas fa-pie-chart"></i> Distribución de Versiones</h2>
+            <div class="chart-container">
+                <canvas id="versionsChart"></canvas>
+            </div>
+        </div>
     </div>
 </main>
 
@@ -334,6 +358,62 @@
     const API_URL = "https://mrghnngupolsgatcmevw.supabase.co/functions/v1/actualizar-canales";
     let sessionToken = localStorage.getItem("novaplay_session_token") || "";
     let maintenanceEnabled = false;
+    let charts = {};
+
+    function initCharts(activityData, versionData) {
+        const ctxActivity = document.getElementById('activityChart').getContext('2d');
+        const ctxVersions = document.getElementById('versionsChart').getContext('2d');
+
+        if (charts.activity) charts.activity.destroy();
+        if (charts.versions) charts.versions.destroy();
+
+        // 1. Gráfico de Actividad (Barra)
+        charts.activity = new Chart(ctxActivity, {
+            type: 'line',
+            data: {
+                labels: activityData.labels,
+                datasets: [{
+                    label: 'Conexiones',
+                    data: activityData.values,
+                    borderColor: '#e50914',
+                    backgroundColor: 'rgba(229, 9, 20, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' }, border: { display: false } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+
+        // 2. Gráfico de Versiones (Pie)
+        charts.versions = new Chart(ctxVersions, {
+            type: 'doughnut',
+            data: {
+                labels: versionData.labels,
+                datasets: [{
+                    data: versionData.values,
+                    backgroundColor: ['#e50914', '#10b981', '#ffbb00', '#293246', '#1a1f2e'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'right', labels: { color: '#9aa3b2', font: { size: 10, weight: '800' } } }
+                },
+                cutout: '70%'
+            }
+        });
+    }
 
     function novaToast(message, type = 'success') {
         const toast = document.createElement("div");
@@ -456,7 +536,37 @@
         const users = await req({ action: "seguridad_listar_usuarios" });
         const black = await req({ action: "seguridad_listar_blacklist" });
         const logs = await req({ action: "listar_logs" });
-        if (users) document.getElementById('count-users').innerText = users.length || 0;
+
+        if (users) {
+            document.getElementById('count-users').innerText = users.length || 0;
+
+            // Procesar datos para gráficos
+            const versionCounts = {};
+            const activityHours = new Array(24).fill(0);
+            const now = new Date();
+
+            users.forEach(u => {
+                // Versiones
+                const v = u.version_app || "Desconocida";
+                versionCounts[v] = (versionCounts[v] || 0) + 1;
+
+                // Actividad (Simulada por fecha de actualización si no hay login log)
+                if (u.fecha_actualizacion) {
+                    const date = new Date(u.fecha_actualizacion);
+                    const diffHours = Math.floor((now - date) / (1000 * 60 * 60));
+                    if (diffHours < 24) {
+                        activityHours[23 - diffHours]++;
+                    }
+                }
+            });
+
+            const actLabels = Array.from({length: 24}, (_, i) => `${i}h`);
+            initCharts(
+                { labels: actLabels, values: activityHours },
+                { labels: Object.keys(versionCounts), values: Object.values(versionCounts) }
+            );
+        }
+
         if (black) document.getElementById('count-blocked').innerText = black.length || 0;
         if (logs) document.getElementById('count-logs').innerText = logs.length || 0;
 
