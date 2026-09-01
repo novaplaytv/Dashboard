@@ -128,6 +128,16 @@
         .v-item { padding: 6px 12px; border-radius: 10px; font-size: 10px; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 6px; border: 1px solid rgba(255,255,255,0.05); }
         .v-item b { color: var(--primary); font-size: 12px; }
 
+        /* Health Check Styles */
+        .health-list { width: 100%; text-align: left; }
+        .health-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.03); }
+        .health-item:last-child { border-bottom: none; }
+        .health-label { font-size: 13px; font-weight: 600; color: var(--text-muted); display: flex; align-items: center; gap: 10px; }
+        .health-status { font-size: 11px; font-weight: 900; text-transform: uppercase; padding: 4px 10px; border-radius: 8px; }
+        .status-ok { background: rgba(16,185,129,0.1); color: var(--success); }
+        .status-warn { background: rgba(255,187,0,0.1); color: var(--warning); }
+        .status-err { background: rgba(229,9,20,0.1); color: var(--primary); }
+
         @media (max-width: 900px) {
             .card.wide { grid-column: auto; }
         }
@@ -318,6 +328,31 @@
             <a href="https://novaplaytv.github.io/NovaApps/" class="btn-launch">
                 <i class="fas fa-store"></i> IR A DESCARGAS
             </a>
+        </div>
+
+        <div class="card">
+            <h2><i class="fas fa-server"></i> Salud del Sistema</h2>
+            <div class="health-list">
+                <div class="health-item">
+                    <span class="health-label"><i class="fas fa-cloud"></i> Supabase Cloud</span>
+                    <span id="health-supabase" class="health-status status-warn">Verificando...</span>
+                </div>
+                <div class="health-item">
+                    <span class="health-label"><i class="fab fa-github"></i> GitHub API</span>
+                    <span id="health-github" class="health-status status-warn">Verificando...</span>
+                </div>
+                <div class="health-item">
+                    <span class="health-label"><i class="fas fa-file-code"></i> Sincronización JSON</span>
+                    <span id="health-json" class="health-status status-warn">Esperando...</span>
+                </div>
+                <div class="health-item">
+                    <span class="health-label"><i class="fas fa-exclamation-triangle"></i> Último Reporte App</span>
+                    <span id="health-last-error" class="health-status">...</span>
+                </div>
+            </div>
+            <button class="btn-launch" style="background: rgba(255,255,255,0.02); color: #fff; border: 1px solid var(--border);" onclick="checkHealth()">
+                <i class="fas fa-sync-alt"></i> REFRESCAR DIAGNÓSTICO
+            </button>
         </div>
 
         <!-- Gráficos de Actividad -->
@@ -603,6 +638,9 @@
         // 0. Estado de Mantenimiento
         loadMaintenanceStatus();
 
+        // Ejecutar diagnóstico de salud
+        checkHealth();
+
         // 1. Resumen de Seguridad
         const users = await req({ action: "seguridad_listar_usuarios" });
         const black = await req({ action: "seguridad_listar_blacklist" });
@@ -683,6 +721,56 @@
             text.innerText = "SISTEMA: OK";
             btn.className = "btn-maint-nav off";
         }
+    }
+
+    async function checkHealth() {
+        const setStatus = (id, status, text) => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.className = `health-status status-${status}`;
+            el.innerText = text;
+        };
+
+        // 1. Check Supabase (Via Edge Function)
+        try {
+            const start = Date.now();
+            const res = await req({ action: "obtener_mantenimiento" });
+            const lat = Date.now() - start;
+            if (res && res.success) setStatus('health-supabase', 'ok', `ONLINE (${lat}ms)`);
+            else setStatus('health-supabase', 'err', 'ERROR API');
+        } catch(e) { setStatus('health-supabase', 'err', 'OFFLINE'); }
+
+        // 2. Check GitHub (Zen API - No Auth required for simple ping)
+        try {
+            const res = await fetch("https://api.github.com/zen");
+            if (res.ok) setStatus('health-github', 'ok', 'CONECTADO');
+            else setStatus('health-github', 'err', 'BLOQUEADO');
+        } catch(e) { setStatus('health-github', 'err', 'ERROR RED'); }
+
+        // 3. Check JSON (Check if already loaded in summary)
+        const totalChannels = document.getElementById('count-total-ch').innerText;
+        if (totalChannels !== "0") setStatus('health-json', 'ok', 'SINCRONIZADO');
+        else setStatus('health-json', 'err', 'ERROR LECTURA');
+
+        // 4. Last App Report (Search for the newest log)
+        try {
+            const logs = await req({ action: "listar_logs" });
+            if (logs && logs.length > 0) {
+                // Supabase storage returns created_at
+                const latest = logs[0];
+                const date = new Date(latest.created_at);
+                const diff = Math.floor((new Date() - date) / (1000 * 60)); // minutos
+
+                let timeStr = "";
+                if (diff < 60) timeStr = `HACE ${diff}m`;
+                else if (diff < 1440) timeStr = `HACE ${Math.floor(diff/60)}h`;
+                else timeStr = `HACE ${Math.floor(diff/1440)}d`;
+
+                setStatus('health-last-error', (diff < 60 ? 'err' : 'ok'), timeStr);
+            } else {
+                setStatus('health-last-error', 'ok', 'SIN ALERTAS');
+            }
+        } catch(e) { setStatus('health-last-error', 'warn', 'SIN DATOS'); }
     }
 
     function confirmarToggleMantenimiento() {
