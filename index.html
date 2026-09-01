@@ -630,13 +630,26 @@
         // 0. Estado de Mantenimiento
         loadMaintenanceStatus();
 
-        // Ejecutar diagnóstico de salud
-        checkHealth();
-
         // 1. Resumen de Seguridad
         const users = await req({ action: "seguridad_listar_usuarios" });
         const black = await req({ action: "seguridad_listar_blacklist" });
         const logs = await req({ action: "listar_logs" });
+
+        // 2. Resumen de Canales
+        const channelsData = await req({ action: "obtener_json" });
+        if (channelsData && channelsData.json) {
+            let total = 0, inactive = 0;
+            channelsData.json.forEach(cat => {
+                total += (cat.items || []).length;
+                cat.items.forEach(ch => { if (String(ch.status) === 'false') inactive++; });
+            });
+            document.getElementById('count-total-ch').innerText = total;
+            document.getElementById('count-inactive-ch').innerText = inactive;
+            document.getElementById('count-cats').innerText = channelsData.json.length;
+        }
+
+        // Ejecutar diagnóstico de salud (ahora que los datos de canales están listos)
+        checkHealth();
 
         if (users) {
             document.getElementById('count-users').innerText = users.length || 0;
@@ -670,19 +683,6 @@
 
         if (black) document.getElementById('count-blocked').innerText = black.length || 0;
         if (logs) document.getElementById('count-logs').innerText = logs.length || 0;
-
-        // 2. Resumen de Canales
-        const channelsData = await req({ action: "obtener_json" });
-        if (channelsData && channelsData.json) {
-            let total = 0, inactive = 0;
-            channelsData.json.forEach(cat => {
-                total += (cat.items || []).length;
-                cat.items.forEach(ch => { if (String(ch.status) === 'false') inactive++; });
-            });
-            document.getElementById('count-total-ch').innerText = total;
-            document.getElementById('count-inactive-ch').innerText = inactive;
-            document.getElementById('count-cats').innerText = channelsData.json.length;
-        }
 
         // 3. Resumen de Apps
         try {
