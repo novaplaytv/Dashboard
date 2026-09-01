@@ -138,6 +138,16 @@
         .status-warn { background: rgba(255,187,0,0.1); color: var(--warning); }
         .status-err { background: rgba(229,9,20,0.1); color: var(--primary); }
 
+        /* Live Counter Styles */
+        .live-counter-card { grid-column: 1 / -1; background: linear-gradient(135deg, #11151f 0%, #080a10 100%); border: 1px solid var(--border); border-radius: 30px; padding: 40px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.6); }
+        .live-counter-card::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(229,9,20,0.05) 0%, transparent 70%); pointer-events: none; }
+        .live-value { font-size: 80px; font-weight: 900; color: #fff; line-height: 1; letter-spacing: -4px; text-shadow: 0 0 40px rgba(229,9,20,0.6); animation: pulse-glow 2s infinite; }
+        .live-label { font-size: 14px; font-weight: 800; color: var(--primary); text-transform: uppercase; letter-spacing: 4px; margin-top: 10px; display: flex; align-items: center; gap: 10px; }
+        .live-dot { width: 10px; height: 10px; background: var(--primary); border-radius: 50%; box-shadow: 0 0 15px var(--primary); animation: blink 1s infinite; }
+
+        @keyframes pulse-glow { 0%, 100% { text-shadow: 0 0 40px rgba(229,9,20,0.6); } 50% { text-shadow: 0 0 70px rgba(229,9,20,0.9); transform: scale(1.02); } }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
         @media (max-width: 900px) {
             .card.wide { grid-column: auto; }
         }
@@ -272,6 +282,12 @@
     </div>
 
     <div class="app-container hidden" id="main-panel">
+        <!-- Live Users Counter -->
+        <div class="live-counter-card">
+            <span class="live-value" id="count-live">0</span>
+            <span class="live-label"><span class="live-dot"></span> DISPOSITIVOS EN VIVO</span>
+        </div>
+
         <!-- Seguridad Widget -->
         <div class="card">
             <h2><i class="fas fa-shield-alt"></i> Seguridad & Accesos</h2>
@@ -662,25 +678,34 @@
         if (users) {
             document.getElementById('count-users').innerText = users.length || 0;
 
-            // Procesar datos para gráficos
+            // Procesar datos para gráficos y contador Live
             const versionCounts = {};
             const activityHours = new Array(24).fill(0);
             const now = new Date();
+            let liveCount = 0;
 
             users.forEach(u => {
                 // Versiones
                 const v = u.version_app || "Desconocida";
                 versionCounts[v] = (versionCounts[v] || 0) + 1;
 
-                // Actividad (Simulada por fecha de actualización si no hay login log)
+                // Detección "En Vivo" (Señal en los últimos 5 minutos)
                 if (u.fecha_actualizacion) {
                     const date = new Date(u.fecha_actualizacion);
-                    const diffHours = Math.floor((now - date) / (1000 * 60 * 60));
+                    const diffMs = now - date;
+
+                    // Contar si hubo señal hace menos de 5 min
+                    if (Math.floor(diffMs / (1000 * 60)) < 5) liveCount++;
+
+                    // Actividad 24h
+                    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
                     if (diffHours < 24) {
                         activityHours[23 - diffHours]++;
                     }
                 }
             });
+
+            document.getElementById('count-live').innerText = liveCount;
 
             const actLabels = Array.from({length: 24}, (_, i) => `${i}h`);
             initCharts(
