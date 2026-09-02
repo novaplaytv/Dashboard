@@ -84,8 +84,12 @@
         .admin-menu { position: relative; display: none; align-items: center; height: var(--nav-height); padding: 0 10px; }
         .btn-admin { background: #fff; color: #000; font-weight: 900; border: none; cursor: pointer; padding: 10px 20px; border-radius: 12px; font-size: 13px; display: flex; align-items: center; gap: 10px; transition: 0.3s; position: relative; z-index: 10002; }
         .btn-admin:hover { background: var(--primary); color: #fff; box-shadow: 0 0 20px rgba(229,9,20,0.4); }
-        .dropdown-content { position: absolute; top: 100%; right: 0; background: var(--card-bg); min-width: 280px; border-radius: 24px; border: 1px solid var(--border); overflow: hidden; display: none; flex-direction: column; box-shadow: 0 25px 60px rgba(0,0,0,0.9); z-index: 10001; margin-top: -10px; opacity: 0; visibility: hidden; transform: translateY(10px); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1), visibility 0s 0.3s; }
-        .admin-menu:hover .dropdown-content { opacity: 1; visibility: visible; transform: translateY(0); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1), visibility 0s 0s; }
+        .dropdown-content { position: absolute; top: 100%; right: 0; background: var(--card-bg); min-width: 280px; border-radius: 24px; border: 1px solid var(--border); overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 25px 60px rgba(0,0,0,0.9); z-index: 10001; margin-top: -10px; opacity: 0; visibility: hidden; transform: translateY(10px); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); pointer-events: none; }
+        .admin-menu.active .dropdown-content { opacity: 1; visibility: visible; transform: translateY(0); pointer-events: auto; }
+        /* Desktop Hover Fallback */
+        @media (min-width: 901px) {
+            .admin-menu:hover .dropdown-content { opacity: 1; visibility: visible; transform: translateY(0); pointer-events: auto; }
+        }
         .dropdown-content::before { content: ''; position: absolute; top: -50px; left: -50px; right: -50px; height: 100px; background: transparent; z-index: -1; }
         .dropdown-content a { padding: 16px 25px; color: #fff !important; text-decoration: none !important; font-size: 13px !important; font-weight: 700 !important; border-bottom: 1px solid rgba(255,255,255,0.03); transition: 0.2s; display: flex; align-items: center; gap: 15px; }
         .dropdown-content a i { width: 20px; color: var(--primary); text-align: center; font-size: 16px; }
@@ -846,15 +850,27 @@
         });
     }
 
-    // Toggle Dropdown en Móvil
+    // Toggle Dropdown (Mobile & Desktop)
     if (btnAdmin) {
         btnAdmin.addEventListener('click', (e) => {
-            if (window.innerWidth <= 900) {
-                e.preventDefault();
-                adminMenu.classList.toggle('active');
-            }
+            e.stopPropagation();
+            adminMenu.classList.toggle('active');
         });
     }
+
+    // Cerrar menú al clickear fuera
+    document.addEventListener('click', (e) => {
+        if (adminMenu && !adminMenu.contains(e.target)) {
+            adminMenu.classList.remove('active');
+        }
+    });
+
+    // Cerrar menú al clickear link
+    document.querySelectorAll('.dropdown-content a').forEach(link => {
+        link.addEventListener('click', () => {
+            adminMenu.classList.remove('active');
+        });
+    });
 
     // Cerrar menú al clickear link (móvil)
     document.querySelectorAll('.nav-links a').forEach(link => {
