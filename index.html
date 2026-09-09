@@ -420,9 +420,39 @@
 
 <script>
     const API_URL = "https://mrghnngupolsgatcmevw.supabase.co/functions/v1/actualizar-canales";
+    const CONNECTOR_URL = "https://mrghnngupolsgatcmevw.supabase.co/functions/v1/access_connector";
+    const APP_USER = "novaplay";
+
     let sessionToken = localStorage.getItem("novaplay_session_token") || "";
     let maintenanceEnabled = false;
     let charts = {};
+
+    async function fetchSafeData(action, isBeta = false) {
+        try {
+            // Handshake para obtener credenciales
+            const authRes = await fetch(CONNECTOR_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: "obtener_credenciales", usuario: APP_USER })
+            });
+            const credentials = await authRes.json();
+            const authHeader = "Basic " + btoa(`${APP_USER}:${credentials.password}`);
+
+            // Obtener datos reales
+            const dataRes = await fetch(CONNECTOR_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': authHeader
+                },
+                body: JSON.stringify({ action: action, beta: isBeta })
+            });
+            return await dataRes.json();
+        } catch (e) {
+            console.error("Error en conexión segura:", e);
+            return null;
+        }
+    }
 
     function initCharts(activityData, versionData) {
         const ctxActivity = document.getElementById('activityChart').getContext('2d');
@@ -722,20 +752,26 @@
         if (black) document.getElementById('count-blocked').innerText = black.length || 0;
         if (logs) document.getElementById('count-logs').innerText = logs.length || 0;
 
-        // 3. Resumen de Apps
-        try {
-            const resApps = await fetch("https://raw.githubusercontent.com/novaplaytv/NovaApps/main/app_data.json?t=" + new Date().getTime());
-            const dataApps = await resApps.json();
-            document.getElementById('v-stable').innerText = "v" + dataApps.stable.version;
-            document.getElementById('v-beta').innerText = "v" + dataApps.beta.version;
-            document.getElementById('v-killer').innerText = "v" + dataApps.killer.version;
-        } catch(e) {}
+        // 3. Resumen de Apps via NovaConnect
+        const [dataApps, betaApps] = await Promise.all([
+            fetchSafeData("obtener_actualizacion", false),
+            fetchSafeData("obtener_actualizacion", true)
+        ]);
+
+        if (dataApps) {
+            document.getElementById('v-stable').innerText = "v" + dataApps.version;
+            // No hay HiperNova en el conector todavía, pero si el usuario quiere, se podría añadir.
+            // document.getElementById('v-killer').innerText = ...
+        }
+        if (betaApps) {
+            document.getElementById('v-beta').innerText = "v" + betaApps.version;
+        }
     }
 
     async function loadMaintenanceStatus() {
-        const res = await req({ action: "obtener_mantenimiento" });
-        if (res && res.json) {
-            maintenanceEnabled = res.json.success;
+        const res = await fetchSafeData("obtener_mantenimiento");
+        if (res) {
+            maintenanceEnabled = res.success;
             updateMaintenanceUI();
         }
     }
@@ -764,9 +800,9 @@
         // 1. Check Supabase (Via Edge Function)
         try {
             const start = Date.now();
-            const res = await req({ action: "obtener_mantenimiento" });
+            const res = await fetchSafeData("obtener_mantenimiento");
             const lat = Date.now() - start;
-            if (res && res.success) setStatus('health-supabase', 'ok', `ONLINE (${lat}ms)`);
+            if (res) setStatus('health-supabase', 'ok', `ONLINE (${lat}ms)`);
             else setStatus('health-supabase', 'err', 'ERROR API');
         } catch(e) { setStatus('health-supabase', 'err', 'OFFLINE'); }
 
