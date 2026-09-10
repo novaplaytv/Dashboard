@@ -31,7 +31,7 @@
         * { box-sizing: border-box; outline: none; margin: 0; padding: 0; }
         html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; overflow: hidden; -webkit-font-smoothing: antialiased; }
 
-        /* Navegación Premium */
+        /* NavegaciÃ³n Premium */
         .nova-nav { position: fixed; top: 0; width: 100%; z-index: 10000; background: rgba(0,0,0,0.7); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.05); transition: 0.3s; }
         .nav-inner { max-width: 1400px; margin: auto; height: var(--nav-height); padding: 0 30px; display: flex; align-items: center; justify-content: space-between; }
         .nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: #fff; font-weight: 900; font-size: 22px; letter-spacing: -1px; }
@@ -61,7 +61,7 @@
 
         .nav-toggle { display: none; }
 
-        /* Botón de Mantenimiento Nav */
+        /* BotÃ³n de Mantenimiento Nav */
         .btn-maint-nav {
             display: none;
             align-items: center;
@@ -80,7 +80,7 @@
         .btn-maint-nav.on { background: var(--error); color: #fff; border-color: var(--error); box-shadow: 0 0 15px rgba(239,68,68,0.4); }
         .btn-maint-nav:hover { transform: scale(1.05); filter: brightness(1.2); }
 
-        /* Dropdown de Administración Premium - BLINDAJE TOTAL V4 */
+        /* Dropdown de AdministraciÃ³n Premium - BLINDAJE TOTAL V4 */
         .admin-menu { position: relative; display: none; align-items: center; height: var(--nav-height); padding: 0 10px; }
         .btn-admin { background: #fff; color: #000; font-weight: 900; border: none; cursor: pointer; padding: 10px 20px; border-radius: 12px; font-size: 13px; display: flex; align-items: center; gap: 10px; transition: 0.3s; position: relative; z-index: 10002; }
         .btn-admin:hover { background: var(--primary); color: #fff; box-shadow: 0 0 20px rgba(229,9,20,0.4); }
@@ -107,7 +107,7 @@
         .card h2 { font-size: 18px; font-weight: 900; margin-bottom: 25px; display: flex; align-items: center; justify-content: center; gap: 12px; text-transform: uppercase; color: var(--text-muted); width: 100%; }
         .card h2 i { font-size: 20px; color: var(--primary); }
 
-        /* Resúmenes */
+        /* ResÃºmenes */
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%; margin-bottom: 30px; }
         .stat-box { background: rgba(255,255,255,0.03); padding: 25px 15px; border-radius: 24px; border: 1px solid var(--border); text-align: center; flex: 1; }
         .stat-box .value { display: block; font-size: 32px; font-weight: 900; color: #fff; line-height: 1; }
@@ -205,10 +205,10 @@
             .nav-links.active { right: 0; }
             .nav-links a { font-size: 18px; width: 100%; text-align: center; padding: 15px; border-radius: 15px; }
 
-            /* Botón Mantenimiento en móvil */
+            /* BotÃ³n Mantenimiento en mÃ³vil */
             .btn-maint-nav { width: 100%; justify-content: center; padding: 18px; font-size: 14px; border-radius: 15px; }
 
-            /* Ajuste del botón PANEL en móvil */
+            /* Ajuste del botÃ³n PANEL en mÃ³vil */
             .admin-menu { width: 100%; height: auto; justify-content: center; padding: 0; flex-direction: column; }
             .admin-menu.active .dropdown-content { opacity: 1; visibility: visible; display: flex; }
             .btn-admin { width: 100%; justify-content: center; padding: 18px; font-size: 16px; border-radius: 15px; }
@@ -219,7 +219,7 @@
             .nav-toggle.active span:nth-child(2) { opacity: 0; }
             .nav-toggle.active span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
 
-            /* Dashboard Cards en móvil */
+            /* Dashboard Cards en mÃ³vil */
             main { padding: 20px 10px; height: auto; overflow: visible; }
             .app-container { grid-template-columns: 1fr; padding: 20px 10px; gap: 20px; }
             .card { min-height: auto; padding: 30px 20px; }
@@ -240,7 +240,7 @@
             NOVAPLAY | DASHBOARD
         </a>
 
-        <button class="nav-toggle" id="navToggle" aria-label="Abrir menú">
+        <button class="nav-toggle" id="navToggle" aria-label="Abrir menÃº">
             <span></span>
             <span></span>
             <span></span>
@@ -258,11 +258,11 @@
                     <a href="https://novaplaytv.github.io/Dashboard/"><i class="fas fa-chart-line"></i> Dashboard Central</a>
                     <a href="https://novaplaytv.github.io/panel-canales/"><i class="fas fa-tv"></i> Admin. Canales</a>
                     <a href="https://novaplaytv.github.io/NovaSecurity/"><i class="fas fa-shield-alt"></i> NovaSecurity</a>
-                    <a href="https://novaplaytv.github.io/SignalVerificador/"><i class="fas fa-broadcast-tower"></i> Verificador de Señal</a>
-                    <a href="https://novaplaytv.github.io/novaimg/actualizar-icono/"><i class="fas fa-icons"></i> Gestión de Iconos</a>
+                    <a href="https://novaplaytv.github.io/SignalVerificador/"><i class="fas fa-broadcast-tower"></i> Verificador de SeÃ±al</a>
+                    <a href="https://novaplaytv.github.io/novaimg/actualizar-icono/"><i class="fas fa-icons"></i> GestiÃ³n de Iconos</a>
                     <a href="https://novaplaytv.github.io/novaimg/generador/"><i class="fas fa-magic"></i> Icon Studio</a>
                     <a href="https://novaplaytv.github.io/novaepg/"><i class="fas fa-calendar-alt"></i> Buscador EPG ID</a>
-                    <a href="#" onclick="cerrarSesion(); return false;" class="logout-link"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a>
+                    <a href="#" onclick="cerrarSesion(); return false;" class="logout-link"><i class="fas fa-sign-out-alt"></i> Cerrar SesiÃ³n</a>
                 </div>
             </div>
         </div>
@@ -278,8 +278,8 @@
                 <input type="text" id="username" placeholder="Usuario">
             </div>
             <div class="form-group">
-                <label>Contraseña</label>
-                <input type="password" id="password" placeholder="••••••••">
+                <label>ContraseÃ±a</label>
+                <input type="password" id="password" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢">
             </div>
             <button class="btn-primary" id="loginButton" style="width:100%; justify-content:center; padding: 18px; border-radius: 14px; font-weight: 900;" onclick="iniciarSesion()">ENTRAR AL DASHBOARD</button>
             <div id="loginStatus" class="status"></div>
@@ -307,7 +307,7 @@
                 </div>
             </div>
             <div class="info-container">
-                <div class="version-row"><span>Estado del Búnker</span> <span class="tag" style="color:var(--success); background:rgba(16,185,129,0.1)">PROTEGIDO</span></div>
+                <div class="version-row"><span>Estado del BÃºnker</span> <span class="tag" style="color:var(--success); background:rgba(16,185,129,0.1)">PROTEGIDO</span></div>
                 <div class="version-row"><span>Alertas Recientes</span> <span class="val" id="count-logs">0</span></div>
             </div>
             <a href="https://novaplaytv.github.io/NovaSecurity/" class="btn-launch">
@@ -317,7 +317,7 @@
 
         <!-- Canales Widget -->
         <div class="card">
-            <h2><i class="fas fa-tv"></i> Gestión de Contenidos</h2>
+            <h2><i class="fas fa-tv"></i> GestiÃ³n de Contenidos</h2>
             <div class="stats-grid">
                 <div class="stat-box">
                     <span class="value" id="count-total-ch">0</span>
@@ -330,7 +330,7 @@
             </div>
             <div class="info-container">
                 <div class="version-row"><span>Fuente Principal</span> <span class="val">novaplay.json</span></div>
-                <div class="version-row"><span>Categorías</span> <span class="val" id="count-cats">0</span></div>
+                <div class="version-row"><span>CategorÃ­as</span> <span class="val" id="count-cats">0</span></div>
             </div>
             <a href="https://novaplaytv.github.io/panel-canales/" class="btn-launch">
                 <i class="fas fa-list"></i> GESTIONAR CANALES
@@ -345,16 +345,16 @@
                 <div class="version-row"><span>NovaPlay Beta</span> <span class="tag" id="v-beta" style="color:var(--primary); background:rgba(229,9,20,0.1)">...</span></div>
                 <div class="version-row"><span>KillerTV</span> <span class="tag" id="v-killer" style="color:var(--success); background:rgba(16,185,129,0.1)">...</span></div>
             </div>
-            <p style="font-size: 10px; color:var(--text-muted); margin-bottom: 25px; line-height: 1.4;">* Los datos se sincronizan automáticamente con el repositorio updater.</p>
+            <p style="font-size: 10px; color:var(--text-muted); margin-bottom: 25px; line-height: 1.4;">* Los datos se sincronizan automÃ¡ticamente con el repositorio updater.</p>
             <a href="https://novaplaytv.github.io/NovaApps/" class="btn-launch">
                 <i class="fas fa-store"></i> IR A DESCARGAS
             </a>
         </div>
 
         <div class="card">
-            <h2><i class="fas fa-pie-chart"></i> Distribución de Versiones</h2>
+            <h2><i class="fas fa-pie-chart"></i> DistribuciÃ³n de Versiones</h2>
             <div id="version-summary-container" class="version-summary-list">
-                <!-- Se llena dinámicamente -->
+                <!-- Se llena dinÃ¡micamente -->
             </div>
             <div class="chart-container">
                 <canvas id="versionsChart"></canvas>
@@ -373,20 +373,20 @@
                     <span id="health-github" class="health-status status-warn">Verificando...</span>
                 </div>
                 <div class="health-item">
-                    <span class="health-label"><i class="fas fa-file-code"></i> Sincronización JSON</span>
+                    <span class="health-label"><i class="fas fa-file-code"></i> SincronizaciÃ³n JSON</span>
                     <span id="health-json" class="health-status status-warn">Esperando...</span>
                 </div>
                 <div class="health-item">
-                    <span class="health-label"><i class="fas fa-exclamation-triangle"></i> Último Reporte App</span>
+                    <span class="health-label"><i class="fas fa-exclamation-triangle"></i> Ãšltimo Reporte App</span>
                     <span id="health-last-error" class="health-status">...</span>
                 </div>
             </div>
             <button class="btn-launch" style="background: rgba(255,255,255,0.02); color: #fff; border: 1px solid var(--border);" onclick="checkHealth()">
-                <i class="fas fa-sync-alt"></i> REFRESCAR DIAGNÓSTICO
+                <i class="fas fa-sync-alt"></i> REFRESCAR DIAGNÃ“STICO
             </button>
         </div>
 
-        <!-- Gráficos de Actividad -->
+        <!-- GrÃ¡ficos de Actividad -->
         <div class="card wide">
             <h2 style="margin-bottom: 10px;"><i class="fas fa-chart-line"></i> Actividad de Usuarios (24h)</h2>
             <div class="chart-container">
@@ -413,8 +413,8 @@
 
 <footer>
     <div class="footer-text">
-        © 2026 NOVAPLAY TV<br>
-        © 2010 - 2026 - NOVAPLAY TV. TODOS LOS DERECHOS RESERVADOS
+        Â© 2026 NOVAPLAY TV<br>
+        Â© 2010 - 2026 - NOVAPLAY TV. TODOS LOS DERECHOS RESERVADOS
     </div>
 </footer>
 
@@ -449,7 +449,7 @@
             });
             return await dataRes.json();
         } catch (e) {
-            console.error("Error en conexión segura:", e);
+            console.error("Error en conexiÃ³n segura:", e);
             return null;
         }
     }
@@ -469,7 +469,7 @@
             }).join('');
         }
 
-        // 1. Gráfico de Actividad (Barra)
+        // 1. GrÃ¡fico de Actividad (Barra)
         charts.activity = new Chart(ctxActivity, {
             type: 'line',
             data: {
@@ -495,7 +495,7 @@
             }
         });
 
-        // 2. Gráfico de Versiones (Pie)
+        // 2. GrÃ¡fico de Versiones (Pie)
         charts.versions = new Chart(ctxVersions, {
             type: 'doughnut',
             plugins: [ChartDataLabels],
@@ -575,7 +575,7 @@
     function novaToast(message, type = 'success') {
         const toast = document.createElement("div");
         toast.style.cssText = `position:fixed; bottom:20px; right:20px; background:${type === 'success' ? '#10b981' : '#ef4444'}; color:white; padding:15px 25px; border-radius:12px; font-weight:800; z-index:20000; animation: toast-in 0.4s ease; box-shadow: 0 10px 30px rgba(0,0,0,0.5);`;
-        toast.textContent = (type === 'success' ? "? " : "? ") + message;
+        toast.textContent = (type === 'success' ? "âœ… " : "âŒ ") + message;
         document.body.appendChild(toast);
         setTimeout(() => {
             toast.style.opacity = "0";
@@ -677,7 +677,7 @@
     }
 
     function cerrarSesion() {
-        openModal("Cerrar Sesión", "¿Estás seguro que deseas salir del Dashboard?", () => {
+        openModal("Cerrar SesiÃ³n", "Â¿EstÃ¡s seguro que deseas salir del Dashboard?", () => {
             localStorage.removeItem("novaplay_session_token");
             location.reload();
         });
@@ -707,13 +707,13 @@
             document.getElementById('count-cats').innerText = channelsData.json.length;
         }
 
-        // Ejecutar diagnóstico de salud (ahora que los datos de canales están listos)
+        // Ejecutar diagnÃ³stico de salud (ahora que los datos de canales estÃ¡n listos)
         checkHealth();
 
         if (users) {
             document.getElementById('count-users').innerText = users.length || 0;
 
-            // Procesar datos para gráficos y contador Live
+            // Procesar datos para grÃ¡ficos y contador Live
             const versionCounts = {};
             const activityHours = new Array(24).fill(0);
             const now = new Date();
@@ -724,12 +724,12 @@
                 const v = u.version_app || "Desconocida";
                 versionCounts[v] = (versionCounts[v] || 0) + 1;
 
-                // Detección "En Vivo" (Señal en los últimos 5 minutos)
+                // DetecciÃ³n "En Vivo" (SeÃ±al en los Ãºltimos 5 minutos)
                 if (u.fecha_actualizacion) {
                     const date = new Date(u.fecha_actualizacion);
                     const diffMs = now - date;
 
-                    // Contar si hubo señal hace menos de 5 min
+                    // Contar si hubo seÃ±al hace menos de 5 min
                     if (Math.floor(diffMs / (1000 * 60)) < 5) liveCount++;
 
                     // Actividad 24h
@@ -760,7 +760,7 @@
 
         if (dataApps) {
             document.getElementById('v-stable').innerText = "v" + dataApps.version;
-            // No hay HiperNova en el conector todavía, pero si el usuario quiere, se podría añadir.
+            // No hay HiperNova en el conector todavÃ­a, pero si el usuario quiere, se podrÃ­a aÃ±adir.
             // document.getElementById('v-killer').innerText = ...
         }
         if (betaApps) {
@@ -841,7 +841,7 @@
 
     function confirmarToggleMantenimiento() {
         const accion = maintenanceEnabled ? "DESACTIVAR" : "ACTIVAR";
-        const msg = `¿Estás seguro que deseas ${accion} el Modo Mantenimiento?\n\n${maintenanceEnabled ? "Los usuarios podrán entrar a la app." : "Se bloqueará el acceso a todos los usuarios."}`;
+        const msg = `Â¿EstÃ¡s seguro que deseas ${accion} el Modo Mantenimiento?\n\n${maintenanceEnabled ? "Los usuarios podrÃ¡n entrar a la app." : "Se bloquearÃ¡ el acceso a todos los usuarios."}`;
 
         openModal("Confirmar Estado", msg, async () => {
             const btn = document.getElementById('nav-maint-btn');
@@ -853,7 +853,7 @@
             const newStatus = {
                 success: !maintenanceEnabled,
                 title: "Servidor en Mantenimiento",
-                text: "Estamos realizando cambios en el servidor o estamos ajustando cambios para una actualización de la app. Disculpe los inconvenientes"
+                text: "Estamos realizando cambios en el servidor o estamos ajustando cambios para una actualizaciÃ³n de la app. Disculpe los inconvenientes"
             };
 
             const res = await req({
@@ -873,7 +873,7 @@
         });
     }
 
-    // Toggle Menú Móvil
+    // Toggle MenÃº MÃ³vil
     const navToggle = document.getElementById('navToggle');
     const navLinks = document.getElementById('navLinks');
     const adminMenu = document.getElementById('adminMenu');
@@ -894,21 +894,21 @@
         });
     }
 
-    // Cerrar menú al clickear fuera
+    // Cerrar menÃº al clickear fuera
     document.addEventListener('click', (e) => {
         if (adminMenu && !adminMenu.contains(e.target)) {
             adminMenu.classList.remove('active');
         }
     });
 
-    // Cerrar menú al clickear link
+    // Cerrar menÃº al clickear link
     document.querySelectorAll('.dropdown-content a').forEach(link => {
         link.addEventListener('click', () => {
             adminMenu.classList.remove('active');
         });
     });
 
-    // Cerrar menú al clickear link (móvil)
+    // Cerrar menÃº al clickear link (mÃ³vil)
     document.querySelectorAll('.nav-links a').forEach(link => {
         link.addEventListener('click', () => {
             if (navToggle) navToggle.classList.remove('active');
@@ -923,4 +923,3 @@
 </script>
 </body>
 </html>
-
