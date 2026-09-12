@@ -343,7 +343,6 @@
             <div class="info-container" style="margin-top: 10px;">
                 <div class="version-row"><span>NovaPlay Estable</span> <span class="tag" id="v-stable">...</span></div>
                 <div class="version-row"><span>NovaPlay Beta</span> <span class="tag" id="v-beta" style="color:var(--primary); background:rgba(229,9,20,0.1)">...</span></div>
-                <div class="version-row"><span>KillerTV</span> <span class="tag" id="v-killer" style="color:var(--success); background:rgba(16,185,129,0.1)">...</span></div>
             </div>
             <p style="font-size: 10px; color:var(--text-muted); margin-bottom: 25px; line-height: 1.4;">* Los datos se sincronizan automáticamente con el repositorio updater.</p>
             <a href="https://novaplaytv.github.io/NovaApps/" class="btn-launch">
@@ -760,8 +759,6 @@
 
         if (dataApps) {
             document.getElementById('v-stable').innerText = "v" + dataApps.version;
-            // No hay HiperNova en el conector todavía, pero si el usuario quiere, se podría añadir.
-            // document.getElementById('v-killer').innerText = ...
         }
         if (betaApps) {
             document.getElementById('v-beta').innerText = "v" + betaApps.version;
